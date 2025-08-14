@@ -4,7 +4,7 @@ This project implements a reproducible workflow for screening potential TCR-T ce
 ---
 
 ## 📂 Project Structure
-project_root/ \
+pHLATargetTcellTherapy/ \
 ├── Data/ \
 │ ├── Input/ # Raw TCGA + GTEx input data (read-only) \
 │ ├── Processed/ # Intermediate outputs from R scripts \
