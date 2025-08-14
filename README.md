@@ -1,6 +1,5 @@
 # pHLATargetTcellTherapy
-This project implements a reproducible workflow for screening potential TCR-T cell therapy targets using combined **TCGA** and **GTEx** expression data.  
-The method applies tumor vs. normal tissue expression cutoffs, calculates safety/efficacy scores, and ranks gene targets by a combined utility score.
+This project implements a reproducible workflow for screening potential TCR-T cell therapy targets using combined **TCGA** and **GTEx** expression data. The method applies tumor vs. normal tissue expression cutoffs, calculates safety/efficacy scores, and ranks gene targets by a combined utility score.
 
 ---
 
