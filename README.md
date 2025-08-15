@@ -18,7 +18,7 @@ Although minimal in complexity, this workflow:
 ## 📂 Project Structure
 pHLATargetTcellTherapy/ \
 ├── Data/ \
-│ ├── Input/ # Raw TCGA + GTEx input data (read-only) \
+│ ├── Input/ # Raw TCGA + GTEx input data, antigen searching space (read-only) \
 │ ├── Processed/ # Intermediate outputs from R scripts \
 │ └── Reference/ # Tissue risk metadata, gene annotation files \
 ├── Scripts/ \
