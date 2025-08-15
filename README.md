@@ -1,33 +1,17 @@
 # 🎯 pHLATargetTcellTherapy
 
-## Overview
+This repository contains a simple, reproducible workflow for screening potential **TCR-T cell therapy targets** using processed RNA-Seq expression data from the **UCSC Xena platform** (TCGA and GTEx cohorts).
 
-This repository contains a reproducible bioinformatics pipeline for **identifying and prioritizing potential targets for TCR-T cell therapy** by integrating large-scale transcriptomic datasets from **The Cancer Genome Atlas (TCGA)** and the **Genotype-Tissue Expression (GTEx)** project.
+The pipeline:
+1. **Extracts & harmonizes** expression data for tumor and normal tissues from UCSC Xena.
+2. **Calculates cutoffs** for tumor vs. normal expression and the percentage of samples above these cutoffs.
+3. **Applies risk–benefit scoring** to help prioritize genes for further investigation.
 
-The workflow automates the full discovery process:
-1. **Data integration** — harmonizing TCGA and GTEx RNA-Seq expression profiles into a unified, analysis-ready dataset.
-2. **Expression cutoff modeling** — calculating both absolute and relative expression cutoffs from normal tissues to minimize off-target toxicity risk.
-3. **Tumor target assessment** — quantifying tumor-specific expression across multiple cancer indications.
-4. **Risk–benefit scoring** — integrating safety profiles (tissue risk categories) with efficacy metrics to produce a ranked list of candidate targets.
-5. **Decision support** — enabling transparent and data-driven prioritization of targets for downstream validation.
-
----
-
-## ✨ Key Features
-
-- **Reproducible** — Entire analysis is orchestrated via `Makefile` for easy re-runs and automatic step skipping.
-- **Data-driven safety thresholds** — Combines absolute max and IQR-based relative max cutoffs for robust expression filtering.
-- **Risk-aware** — Incorporates tissue-specific risk stratification for improved translational relevance.
-- **Cross-indication utility scoring** — Balances efficacy and safety to allow fair target comparisons across cancer types.
-- **Modular** — Each step (R or Python) can be run independently or as part of the full workflow.
-
----
-
-## Why This Matters
-
-TCR-T cell therapy shows immense promise for precision oncology, but off-target toxicity remains a critical challenge.  
-This pipeline addresses that challenge by systematically integrating **tumor expression patterns** with **normal tissue safety profiles** to highlight targets with **high tumor specificity and minimal normal tissue risk**.  
-The approach is designed for translational researchers, computational biologists, and immunotherapy teams looking to accelerate target discovery without compromising safety.
+Although minimal in complexity, this workflow:
+- Automates the steps from data extraction to ranked target lists.
+- Uses clear, modular R and Python scripts.
+- Organizes intermediate and final results for reproducibility.
+- Can be extended with more advanced statistical modeling or visualization.
 
 ---
 
@@ -48,5 +32,71 @@ pHLATargetTcellTherapy/ \
 ├── config.yaml # Pipeline parameters (cutoffs, risk weights, etc.) \
 └── README.md # This file \
 
-     - **Utility score** = combined safety + efficacy measure
-   - Outputs ranked targets and plots
+
+---
+
+## 🔄 Workflow Overview
+
+1. **Extract expression data** (R)  
+   - Reads tumor and normal RNA-Seq expression from UCSC Xena TCGA + GTEx datasets.
+   - Outputs harmonized expression matrix into `Data/Processed/`.
+
+2. **Calculate cutoffs & percentages** (R)  
+   - Defines cutoffs per gene using both absolute and relative normal tissue expression metrics.
+   - Calculates the percentage of samples above the cutoff for each tumor and normal tissue type.
+
+3. **Risk–benefit scoring** (Python)  
+   - Reads cutoff results and tissue risk categories.
+   - Calculates:
+     - **Benefit score** (per tumor indication)
+     - **Risk score** (global per gene)
+     - **Utility score** = combined measure of safety & efficacy
+   - Outputs ranked targets and summary plots.
+
+---
+
+## ⚙️ Running the Pipeline
+
+### Requirements
+- **R** (≥ 4.0) with packages:
+  - `data.table`
+- **Python** (≥ 3.9) with packages:
+  - `pandas`
+  - `numpy`
+  - `matplotlib`
+  - `pyyaml`
+
+### Run with Makefile
+From the project root:
+```bash
+make
+```
+This will run:
+
+01_extract_expression_data.R
+
+02_cal_cutoff_percentage_above_cutoff.R
+
+03_risk_benefit_pipeline.py
+
+Intermediate results go into Data/Processed/
+Final outputs are stored in Output/
+
+---
+
+## 🧮 Parameters
+
+Pipeline settings are stored in config.yaml:
+```
+cutoff_percentile: 0.95
+relative_k: 1.5
+lambda: 0.5
+tissue_risk_file: Data/Reference/tissue_risk_weights.csv
+```
+---
+
+## 📊 Outputs
+
+- Tables: Output/Tables/final_ranked_targets.csv — ranked list of targets per indication
+
+- Figures: Output/Figures/risk_vs_benefit_scatter.png — safety vs. efficacy overview
