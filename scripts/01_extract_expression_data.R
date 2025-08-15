@@ -1,6 +1,6 @@
 # 1. load data
 # tsv.gz file of gene id and name is brought into R.
-UCSC_Path <- "data/Input/"
+UCSC_Path <- "data/Input/UCSC/"
 file4 <- "TOIL-GTEX_TARGET_TCGA-ROW_DATA.tsv.gz"
 gene <- data.table::fread(file = paste0(UCSC_Path, file4), check.names=FALSE, stringsAsFactors=F)
 
