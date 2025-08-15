@@ -25,31 +25,39 @@ meta <- meta[Diagnosis!=""]
 # Thyroid
 meta[Primary.site=="Thyroid Gland", Primary.site := "Thyroid"] 
 
-# tissue type
-meta[, type := fifelse(Diagnosis=="Normal", "normal", "cancer")]
+# meta data
+meta_norm <- meta[Diagnosis == "Normal"]
+meta_norm[, c("Diagnosis", "Gender", "Study") := NULL]
+data.table::setnames(meta_norm, old = c("Sample.ID", "Primary.site"), new = c("sample_id", "tissue"))
 
-# tissue.cancer
-meta[, tissue.cancer := fifelse(Diagnosis=="Normal", Primary.site, Diagnosis)]
-
-# remove immunoprivileged tissue
-# meta <- meta[Primary.site!="Testis"]
-
-# remove column
-meta[, c("Primary.site", "Diagnosis", "Gender", "Study") := NULL]
+meta_tum <- meta[Diagnosis != "Normal"]
+meta_tum[, c("Primary.site", "Gender", "Study") := NULL]
+data.table::setnames(meta_tum, old = c("Sample.ID", "Diagnosis"), new = c("sample_id", "indication"))
 
 # rna data
 rna <- data.table::transpose(rna, keep.names = "Sample.ID")
-
 data.table::setnames(rna, old=colnames(rna), new=c("Sample.ID", gene$gene))
 
-# select samples
-rna <- rna[Sample.ID%in%meta$Sample.ID]
-
-# select features
-feature <- c("Sample.ID", ct_antigen_targets)
+# select genes
+feature <- c("Sample.ID", ct_antigen)
 rna <- rna[, ..feature]
-rna <- merge(meta, rna, by="Sample.ID")
+
+norm_expr <- rna[Sample.ID %in% meta_norm$sample_id]
+norm_expr <- data.table::transpose(norm_expr, keep.names = "Gene")
+data.table::setnames(norm_expr, old = colnames(norm_expr), new = as.character(norm_expr[1,]))
+norm_expr <- norm_expr[-1,]
+rownames(norm_expr) <- norm_expr$Sample.ID
+data.table::setnames(norm_expr, old = "Sample.ID", new = "gene")
+
+tum_expr <- rna[Sample.ID %in% meta_tum$sample_id]
+tum_expr <- data.table::transpose(tum_expr, keep.names = "Gene")
+data.table::setnames(tum_expr, old = colnames(tum_expr), new = as.character(tum_expr[1,]))
+tum_expr <- tum_expr[-1,]
+rownames(tum_expr) <- tum_expr$Sample.ID
+data.table::setnames(tum_expr, old = "Sample.ID", new = "gene")
 
 # 3. Output
-filename <- "data/Processed/combined_rna_seq.csv"
-data.table::fwrite(rna, file = filename)
+data.table::fwrite(meta_norm, file = "data/Processed/meta_norm.csv")
+data.table::fwrite(meta_tum, file = "data/Processed/meta_tum.csv")
+data.table::fwrite(norm_expr, file = "data/Processed/norm_expr.csv")
+data.table::fwrite(tum_expr, file = "data/Processed/tum_expr.csv")
