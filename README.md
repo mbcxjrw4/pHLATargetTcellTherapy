@@ -16,22 +16,23 @@ Although minimal in complexity, this workflow:
 ---
 
 ## 📂 Project Structure
-pHLATargetTcellTherapy/ \
-├── Data/ \
-│ ├── Input/ # Raw TCGA + GTEx input data, antigen searching space (read-only) \
-│ ├── Processed/ # Intermediate outputs from R scripts \
-│ └── Reference/ # Tissue risk metadata, gene annotation files \
-├── Scripts/ \
-│ ├── 01_extract_expression_data.R \
-│ ├── 02_cal_cutoff_percentage_above_cutoff.R \
-│ ├── 03_risk_benefit_pipeline.py \
-├── Output/ \
-│ ├── Tables/ # Final ranked tables per gene/indication \
-│ └── Figures/ # Plots and visualizations \
-├── Makefile # Workflow orchestration \
-├── config.yaml # Pipeline parameters (cutoffs, risk weights, etc.) \
-└── README.md # This file \
-
+```bash
+pHLATargetTcellTherapy/ 
+├── Data/ 
+│ ├── Input/     # Raw TCGA + GTEx input data, antigen searching space (read-only) 
+│ ├── Processed/ # Intermediate outputs from R scripts 
+│ └── Reference/ # Tissue risk metadata, gene annotation files 
+├── Scripts/ 
+│ ├── 01_extract_expression_data.R 
+│ ├── 02_cal_cutoff_percentage_above_cutoff.R 
+│ ├── 03_risk_benefit_pipeline.py 
+├── Output/ 
+│ ├── Tables/   # Final ranked tables per gene/indication 
+│ └── Figures/  # Plots and visualizations 
+├── Makefile    # Workflow orchestration 
+├── config.yaml # Pipeline parameters (cutoffs, risk weights, etc.) 
+└── README.md   # This file 
+```
 
 ---
 
